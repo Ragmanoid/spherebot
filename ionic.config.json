@@ -1,0 +1,7 @@
+{
+  "name": "spherebot",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}
