@@ -1,5 +1,7 @@
 # Installing 
 
+Должны быть установлены [node.js](https://nodejs.org/) и [ionic](https://ionicframework.com/docs/intro/cli) (```npm install -g @ionic/cli```)
+
 ```git clone https://github.com/Ragmanoid/spherebot.git```
 
 ```cd spherebot```
