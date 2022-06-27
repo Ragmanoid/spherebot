@@ -27,6 +27,7 @@
     "cordova-plugin-bluetooth-serial": "^0.4.7",
     "cordova-plugin-wifiwizard2": "^3.1.1",
     "ionicons": "^5.4.0",
+    "rc-slider": "^10.0.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-router": "^5.2.0",

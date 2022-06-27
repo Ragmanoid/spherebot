@@ -18,7 +18,8 @@ import {
     IonToolbar
 } from '@ionic/react'
 import { arrowForward, arrowBack, stop, speedometer, play } from 'ionicons/icons'
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
+import { toast } from 'react-toastify'
 import Api from '../api/api'
 import { MainContext } from '../MainContext'
 import './Home.css'
@@ -36,6 +37,8 @@ export const Home: React.FC = () => {
     const [speed2, setSpeed2] = useState<number>(50)
     const [rotateSpeed, setRotateSpeed] = useState<number>(50)
     const [rotateAngle, setRotateAngle] = useState<number>(10)
+    const [kMotor, setKMotor] = useState<number>(0)
+    const [kRotor, setKRotor] = useState<number>(0)
     const api = new Api()
 
     const move = async (motorType: MotorType, direction: Direction) => {
@@ -47,6 +50,18 @@ export const Home: React.FC = () => {
         cmd[4] = motorType === 2 ? speed2 : command[4]
         setCommand(cmd)
         await api.startMotor(cmd)
+    }
+
+    const saveCoefficients = async () => {
+        const cmd = [...command]
+        cmd[0] = 182;
+        cmd[1] = kMotor;
+        cmd[2] = kRotor;
+        cmd[3] = 0
+        cmd[4] = 0;
+        const res = await api.startMotor(cmd)
+        if (res.success)
+            toast.success('Success save coefficients')
     }
 
     const rotate = async () => {
@@ -260,6 +275,80 @@ export const Home: React.FC = () => {
                             </IonCol>
                         </IonRow>
                     </IonGrid>
+                </IonCard>
+                <IonCard>
+                    <IonCardHeader>Regulator coefficients</IonCardHeader>
+                    <IonRow>
+                        <IonCol size='6'>
+                            <IonItem>
+                                <IonLabel position='stacked'>Motor</IonLabel>
+                                <IonIcon icon={speedometer} slot='start' />
+                                <IonInput
+                                    type='number'
+                                    value={(kMotor / 100).toString()}
+                                    onIonInput={e => setKMotor(parseInt(e.detail.data || '') * 100)}
+                                    min={-1}
+                                    max={1}
+                                />
+                            </IonItem>
+                        </IonCol>
+                        <IonCol size='3'>
+                            <IonButton
+                                expand='block'
+                                onClick={() => setKMotor(kMotor + (kMotor - 5 < -100 ? 0 : -5))}
+                            >
+                                -0.05
+                            </IonButton>
+                        </IonCol>
+                        <IonCol size='3'>
+
+                            <IonButton
+                                expand='block'
+                                onClick={() => setKMotor(kMotor + (kMotor + 5 > 100 ? 0 : 5))}
+                            >
+                                +0.05
+                            </IonButton>
+                        </IonCol>
+                    </IonRow>
+                    <IonRow>
+                        <IonCol size='6'>
+                            <IonItem>
+                                <IonLabel position='stacked'>Rotor</IonLabel>
+                                <IonIcon icon={speedometer} slot='start' />
+                                <IonInput
+                                    type='number'
+                                    value={(kRotor / 100).toString()}
+                                    onIonInput={e => setKRotor(parseInt(e.detail.data || '') * 100)}
+                                    min={-1}
+                                    max={1}
+                                />
+                            </IonItem>
+                        </IonCol>
+                        <IonCol size='3'>
+                            <IonButton
+                                expand='block'
+                                onClick={() => setKRotor(kRotor + (kRotor - 5 < -100 ? 0 : -5))}
+                            >
+                                -0.05
+                            </IonButton>
+                        </IonCol>
+                        <IonCol size='3'>
+
+                            <IonButton
+                                expand='block'
+                                onClick={() => setKRotor(kRotor + (kRotor + 5 > 100 ? 0 : 5))}
+                            >
+                                +0.05
+                            </IonButton>
+                        </IonCol>
+                    </IonRow>
+                    <IonRow>
+                        <IonCol>
+                            <IonButton expand='block' onClick={() => saveCoefficients()}>
+                                Save coefficients
+                            </IonButton>
+                        </IonCol>
+                    </IonRow>
                 </IonCard>
                 <IonCard>
                     <IonCardHeader>Rotate</IonCardHeader>
